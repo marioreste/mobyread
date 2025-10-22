@@ -33,6 +33,19 @@ class HomeScreen extends StatelessWidget {
             ),
             label: const Text('Vai ai libri da leggere'),
           ),
+          const SizedBox(height: 40),
+          OutlinedButton.icon(
+            onPressed: switchScreen('read'),
+            icon: const Icon(Icons.bookmark_added),
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              side: const BorderSide(color: Colors.white),
+              foregroundColor: Colors.black,
+            ),
+            label: const Text('Vai ai libri letti'),
+          ),
         ],
       )
     );
