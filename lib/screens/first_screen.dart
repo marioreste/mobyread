@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'home_screen.dart';
+import 'reading_screen.dart';
+import 'read_screen.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key}) : super(key: key);
@@ -18,14 +21,14 @@ class _FirstScreenState extends State<FirstScreen> {
   
   @override
   Widget build(BuildContext context) {
-    Widget screenWidget = HomeScreen(); //@TODO HomeScreen
+    Widget screenWidget = HomeScreen(switchNewScreen);
 
     if (activeScreen == 'reading') {
-      screenWidget = ReadingScreen(); //@TODO ReadingScreen
+      screenWidget = ReadingScreen(); 
     } else if (activeScreen == 'read') {
-      screenWidget = ReadScreen(); //@TODO ReadScreen
+      screenWidget = ReadScreen();
     }
-
+    
     return MaterialApp(
       home: SafeArea(
         child: Scaffold(

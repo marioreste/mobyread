@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen(this.switchScreen, {super.key});
-  final Function() switchScreen;
+  final Function(String) switchScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 40),
           OutlinedButton.icon(
-            onPressed: switchScreen('reading'),
+            onPressed: () => switchScreen('reading'),
             icon: const Icon(Icons.book),
             style: OutlinedButton.styleFrom(
               shape: RoundedRectangleBorder(
@@ -35,7 +35,7 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 40),
           OutlinedButton.icon(
-            onPressed: switchScreen('read'),
+            onPressed: () => switchScreen('read'),
             icon: const Icon(Icons.bookmark_added),
             style: OutlinedButton.styleFrom(
               shape: RoundedRectangleBorder(
