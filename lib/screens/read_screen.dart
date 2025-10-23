@@ -93,9 +93,13 @@ class _ReadScreenState extends State<ReadScreen> {
         );
       },
     );
-    titleCtrl.dispose();
-    authorCtrl.dispose();
-    genreCtrl.dispose();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      try {
+        titleCtrl.dispose();
+        authorCtrl.dispose();
+        genreCtrl.dispose();
+      } catch (_) {      }
+    });
   }
 
   @override

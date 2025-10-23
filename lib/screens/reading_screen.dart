@@ -5,9 +5,7 @@ class ReadingScreen extends StatefulWidget {
   const ReadingScreen({super.key});
 
   @override
-  State<ReadingScreen> createState() {
-    return _ReadingScreenState();
-  }
+  State<ReadingScreen> createState() => _ReadingScreenState();
 }
 
 class _ReadingScreenState extends State<ReadingScreen> {
@@ -66,9 +64,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('Annulla'),
             ),
             ElevatedButton(
@@ -77,12 +73,13 @@ class _ReadingScreenState extends State<ReadingScreen> {
                   final title = titleCtrl.text.trim();
                   final author = authorCtrl.text.trim();
                   final genre = genreCtrl.text.trim();
-                  // crea l'oggetto Book usando i campi disponibili nel modello
+
                   final book = Book(
                     title: title,
                     author: author,
                     genre: genre,
                   );
+
                   addBook(book);
                   Navigator.of(context).pop();
                 }
@@ -93,9 +90,17 @@ class _ReadingScreenState extends State<ReadingScreen> {
         );
       },
     );
-    titleCtrl.dispose();
-    authorCtrl.dispose();
-    genreCtrl.dispose();
+
+    // rimanda il dispose al frame successivo così il TextFormField ha tempo di rimuovere i listener
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      try {
+        titleCtrl.dispose();
+        authorCtrl.dispose();
+        genreCtrl.dispose();
+      } catch (_) {
+        // ignore eventuali eccezioni di dispose se già rimossi
+      }
+    });
   }
 
   @override
@@ -151,7 +156,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                 child: Align(
                   alignment: Alignment.center,
                   child: SizedBox(
-                    width: double.infinity, 
+                    width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _showAddBookDialog,
                       child: const Padding(
