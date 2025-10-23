@@ -11,6 +11,9 @@ class ReadingScreen extends StatefulWidget {
 class _ReadingScreenState extends State<ReadingScreen> {
   final List<Book> _toRead = [];
 
+  static const deepBlue = Color(0xFF04122B);
+  static const deepBlueAppBar = Color(0xFF021025);
+
   void addBook(Book book) {
     setState(() {
       _toRead.add(book);
@@ -74,12 +77,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                   final author = authorCtrl.text.trim();
                   final genre = genreCtrl.text.trim();
 
-                  final book = Book(
-                    title: title,
-                    author: author,
-                    genre: genre,
-                  );
-
+                  final book = Book(title: title, author: author, genre: genre);
                   addBook(book);
                   Navigator.of(context).pop();
                 }
@@ -91,77 +89,91 @@ class _ReadingScreenState extends State<ReadingScreen> {
       },
     );
 
-    // rimanda il dispose al frame successivo così il TextFormField ha tempo di rimuovere i listener
     WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
         titleCtrl.dispose();
         authorCtrl.dispose();
         genreCtrl.dispose();
-      } catch (_) {
-        // ignore eventuali eccezioni di dispose se già rimossi
-      }
+      } catch (_) {}
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: deepBlue,
       appBar: AppBar(
-        title: const Text('Libri da leggere'),
+        backgroundColor: deepBlueAppBar,
+        title: const Text(
+          'Libri da leggere',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: SizedBox(
         width: double.infinity,
         child: SafeArea(
           child: Column(
             children: [
-              // area principale con lista dei libri "da leggere"
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: _toRead.isEmpty
                       ? const Center(
-                          child: Text('Ancora nessun libro da leggere. Aggiungine uno!'),
+                          child: Text(
+                            'Ancora nessun libro da leggere. Aggiungine uno!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                            ),
+                          ),
                         )
                       : SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              ..._toRead
-                                  .map(
-                                    (book) => Column(
-                                      children: [
-                                        ListTile(
-                                          title: Text(book.title),
-                                          subtitle: Text(book.author),
-                                          trailing: IconButton(
-                                            icon: const Icon(Icons.delete),
-                                            onPressed: () => removeBook(book),
-                                          ),
-                                        ),
-                                        const Divider(),
-                                      ],
+                              ..._toRead.map(
+                                (book) => Column(
+                                  children: [
+                                    ListTile(
+                                      title: Text(book.title, style: const TextStyle(color: Colors.white)),
+                                      subtitle: Text(book.author, style: const TextStyle(color: Colors.white70)),
+                                      trailing: IconButton(
+                                        icon: const Icon(Icons.delete, color: Colors.white),
+                                        onPressed: () => removeBook(book),
+                                      ),
                                     ),
-                                  )
-                                  .toList(),
+                                    const Divider(color: Colors.white24),
+                                  ],
+                                ),
+                              ).toList(),
                             ],
                           ),
                         ),
                 ),
               ),
 
-              // pulsante centrato in fondo: apre dialog per inserire nuovo libro
+              // pulsante centrato in fondo: bianco con testo nero, più grande
               Padding(
-                padding:
-                    const EdgeInsets.only(bottom: 20.0, left: 16.0, right: 16.0),
+                padding: const EdgeInsets.only(bottom: 20.0, left: 16.0, right: 16.0),
                 child: Align(
                   alignment: Alignment.center,
                   child: SizedBox(
-                    width: double.infinity,
+                    width: 260,
                     child: ElevatedButton(
                       onPressed: _showAddBookDialog,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 14.0),
-                        child: Text('Aggiungi un libro'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add, size: 22, color: Colors.black),
+                          SizedBox(width: 10),
+                          Text('Aggiungi un libro', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                        ],
                       ),
                     ),
                   ),
