@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'reading_screen.dart';
+import 'read_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen(this.switchScreen, {super.key});
-  final Function(String) switchScreen;
+  const HomeScreen({super.key});
 
   static const deepBlue = Color(0xFF04122B);
 
   @override
   Widget build(BuildContext context) {
-    // larghezza fissa per uniformare i due pulsanti
     const buttonWidth = 320.0;
 
     return Container(
@@ -17,7 +17,6 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // immagine ridotta e contenuta
             SizedBox(
               height: 120,
               child: Image.asset(
@@ -32,13 +31,18 @@ class HomeScreen extends StatelessWidget {
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
+                decoration: TextDecoration.none,
               ),
             ),
             const SizedBox(height: 36),
             SizedBox(
               width: buttonWidth,
               child: OutlinedButton.icon(
-                onPressed: () => switchScreen('reading'),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const ReadingScreen()),
+                  );
+                },
                 icon: const Icon(Icons.book, size: 26),
                 label: const Text(
                   'Vai ai libri da leggere',
@@ -59,7 +63,11 @@ class HomeScreen extends StatelessWidget {
             SizedBox(
               width: buttonWidth,
               child: OutlinedButton.icon(
-                onPressed: () => switchScreen('read'),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const ReadScreen()),
+                  );
+                },
                 icon: const Icon(Icons.bookmark_added, size: 26),
                 label: const Text(
                   'Vai ai libri letti',

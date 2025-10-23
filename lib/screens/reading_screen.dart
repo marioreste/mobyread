@@ -104,10 +104,11 @@ class _ReadingScreenState extends State<ReadingScreen> {
       backgroundColor: deepBlue,
       appBar: AppBar(
         backgroundColor: deepBlueAppBar,
-        title: const Text(
-          'Libri da leggere',
-          style: TextStyle(color: Colors.white),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
         ),
+        title: const Text('Libri da leggere'),
       ),
       body: SizedBox(
         width: double.infinity,
@@ -152,7 +153,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
                 ),
               ),
 
-              // pulsante centrato in fondo: bianco con testo nero, più grande
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0, left: 16.0, right: 16.0),
                 child: Align(
