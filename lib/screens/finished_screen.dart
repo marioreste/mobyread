@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import '../models/book.dart';
 import '../models/books_store.dart';
 
-class ReadScreen extends StatefulWidget {
-  const ReadScreen({super.key});
+class FinishedScreen extends StatefulWidget {
+  const FinishedScreen({super.key});
 
   @override
-  State<ReadScreen> createState() => _ReadScreenState();
+  State<FinishedScreen> createState() => _FinishedScreenState();
 }
 
-class _ReadScreenState extends State<ReadScreen> {
+class _FinishedScreenState extends State<FinishedScreen> {
   static const deepBlue = Color(0xFF04122B);
   static const deepBlueAppBar = Color(0xFF021025);
 

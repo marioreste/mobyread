@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'reading_screen.dart';
-import 'read_screen.dart';
+import 'finished_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -65,7 +65,7 @@ class HomeScreen extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const ReadScreen()),
+                    MaterialPageRoute(builder: (_) => const FinishedScreen()),
                   );
                 },
                 icon: const Icon(Icons.bookmark_added, size: 26),
