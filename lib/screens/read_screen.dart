@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/book.dart';
+import '../models/books_store.dart';
 
 class ReadScreen extends StatefulWidget {
   const ReadScreen({super.key});
@@ -9,22 +10,11 @@ class ReadScreen extends StatefulWidget {
 }
 
 class _ReadScreenState extends State<ReadScreen> {
-  final List<Book> _readBooks = [];
-
   static const deepBlue = Color(0xFF04122B);
   static const deepBlueAppBar = Color(0xFF021025);
 
-  void addBook(Book book) {
-    setState(() {
-      _readBooks.add(book);
-    });
-  }
-
-  void removeBook(Book book) {
-    setState(() {
-      _readBooks.removeWhere((b) => b.title == book.title);
-    });
-  }
+  void addBook(Book book) => BooksStore.instance.addRead(book);
+  void removeBook(Book book) => BooksStore.instance.removeFromRead(book);
 
   Future<void> _showAddBookDialog() async {
     final formKey = GlobalKey<FormState>();
@@ -119,26 +109,26 @@ class _ReadScreenState extends State<ReadScreen> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: _readBooks.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'Ancora nessun libro segnato come letto.',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                          ),
-                        ),
-                      )
-                    : SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ..._readBooks.map(
-                              (book) => Column(
+                child: ValueListenableBuilder<List<Book>>(
+                  valueListenable: BooksStore.instance.readBooks,
+                  builder: (context, books, _) {
+                    if (books.isEmpty) {
+                      return const Center(
+                        child: Text('Ancora nessun libro segnato come letto.', style: TextStyle(color: Colors.white)),
+                      );
+                    }
+                    return SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ...books.map((book) => Column(
                                 children: [
                                   ListTile(
                                     title: Text(book.title, style: const TextStyle(color: Colors.white)),
-                                    subtitle: Text(book.author, style: const TextStyle(color: Colors.white70)),
+                                    subtitle: (() {
+                                      final text = [book.author, book.genre].join(' - ');
+                                      return Text(text, style: const TextStyle(color: Colors.white70));
+                                    }()),
                                     trailing: IconButton(
                                       icon: const Icon(Icons.delete, color: Colors.white),
                                       onPressed: () => removeBook(book),
@@ -146,14 +136,14 @@ class _ReadScreenState extends State<ReadScreen> {
                                   ),
                                   const Divider(color: Colors.white24),
                                 ],
-                              ),
-                            ).toList(),
-                          ],
-                        ),
+                              )),
+                        ],
                       ),
+                    );
+                  },
+                ),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0, left: 16.0, right: 16.0),
               child: Align(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/book.dart';
+import '../models/books_store.dart';
 
 class ReadingScreen extends StatefulWidget {
   const ReadingScreen({super.key});
@@ -9,22 +10,12 @@ class ReadingScreen extends StatefulWidget {
 }
 
 class _ReadingScreenState extends State<ReadingScreen> {
-  final List<Book> _toRead = [];
 
   static const deepBlue = Color(0xFF04122B);
   static const deepBlueAppBar = Color(0xFF021025);
 
-  void addBook(Book book) {
-    setState(() {
-      _toRead.add(book);
-    });
-  }
-
-  void removeBook(Book book) {
-    setState(() {
-      _toRead.removeWhere((b) => b.title == book.title);
-    });
-  }
+  void addBook(Book book) => BooksStore.instance.addToRead(book);
+  void removeBook(Book book) => BooksStore.instance.removeFromToRead(book);
 
   Future<void> _showAddBookDialog() async {
     final formKey = GlobalKey<FormState>();
@@ -110,77 +101,77 @@ class _ReadingScreenState extends State<ReadingScreen> {
         ),
         title: const Text('Libri da leggere'),
       ),
-      body: SizedBox(
-        width: double.infinity,
-        child: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: _toRead.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'Ancora nessun libro da leggere. Aggiungine uno!',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                            ),
-                          ),
-                        )
-                      : SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              ..._toRead.map(
-                                (book) => Column(
-                                  children: [
-                                    ListTile(
-                                      title: Text(book.title, style: const TextStyle(color: Colors.white)),
-                                      subtitle: Text(book.author, style: const TextStyle(color: Colors.white70)),
-                                      trailing: IconButton(
-                                        icon: const Icon(Icons.delete, color: Colors.white),
-                                        onPressed: () => removeBook(book),
-                                      ),
-                                    ),
-                                    const Divider(color: Colors.white24),
-                                  ],
-                                ),
-                              ).toList(),
-                            ],
-                          ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ValueListenableBuilder<List<Book>>(
+                  valueListenable: BooksStore.instance.toRead,
+                  builder: (context, books, _) {
+                    if (books.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'Ancora nessun libro da leggere. Aggiungine uno!',
+                          style: TextStyle(color: Colors.white),
                         ),
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0, left: 16.0, right: 16.0),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    width: 260,
-                    child: ElevatedButton(
-                      onPressed: _showAddBookDialog,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      );
+                    }
+                    return SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Icon(Icons.add, size: 22, color: Colors.black),
-                          SizedBox(width: 10),
-                          Text('Aggiungi un libro', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                          ...books.map((book) => Column(
+                                children: [
+                                  ListTile(
+                                    title: Text(book.title, style: const TextStyle(color: Colors.white)),
+                                    subtitle: (() {
+                                      final text = [book.author, book.genre].join(' - ');
+                                      return Text(text, style: const TextStyle(color: Colors.white70));
+                                    }()),
+                                    trailing: IconButton(
+                                      icon: const Icon(Icons.delete, color: Colors.white),
+                                      onPressed: () => removeBook(book),
+                                    ),
+                                  ),
+                                  const Divider(color: Colors.white24),
+                                ],
+                              )),
                         ],
                       ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0, left: 16.0, right: 16.0),
+              child: Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: 260,
+                  child: ElevatedButton(
+                    onPressed: _showAddBookDialog,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add, size: 22, color: Colors.black),
+                        SizedBox(width: 10),
+                        Text('Aggiungi un libro', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
