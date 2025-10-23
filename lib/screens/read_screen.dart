@@ -129,9 +129,15 @@ class _ReadScreenState extends State<ReadScreen> {
                                       final text = [book.author, book.genre].join(' - ');
                                       return Text(text, style: const TextStyle(color: Colors.white70));
                                     }()),
-                                    trailing: IconButton(
-                                      icon: const Icon(Icons.delete, color: Colors.white),
-                                      onPressed: () => removeBook(book),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.delete, color: Colors.red),
+                                          tooltip: 'Rimuovi',
+                                          onPressed: () => removeBook(book),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   const Divider(color: Colors.white24),

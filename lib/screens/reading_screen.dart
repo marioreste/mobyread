@@ -10,12 +10,12 @@ class ReadingScreen extends StatefulWidget {
 }
 
 class _ReadingScreenState extends State<ReadingScreen> {
-
   static const deepBlue = Color(0xFF04122B);
   static const deepBlueAppBar = Color(0xFF021025);
 
   void addBook(Book book) => BooksStore.instance.addToRead(book);
   void removeBook(Book book) => BooksStore.instance.removeFromToRead(book);
+  void markAsRead(Book book) => BooksStore.instance.markAsRead(book);
 
   Future<void> _showAddBookDialog() async {
     final formKey = GlobalKey<FormState>();
@@ -129,15 +129,26 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                     subtitle: (() {
                                       final text = [book.author, book.genre].join(' - ');
                                       return Text(text, style: const TextStyle(color: Colors.white70));
-                                    }()),
-                                    trailing: IconButton(
-                                      icon: const Icon(Icons.delete, color: Colors.white),
-                                      onPressed: () => removeBook(book),
+                                    })(),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.check, color: Colors.white),
+                                          tooltip: 'Segna come letto',
+                                          onPressed: () => markAsRead(book),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete, color: Colors.red),
+                                          tooltip: 'Rimuovi',
+                                          onPressed: () => removeBook(book),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   const Divider(color: Colors.white24),
                                 ],
-                              )),
+                              )).toList(),
                         ],
                       ),
                     );
@@ -145,6 +156,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                 ),
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0, left: 16.0, right: 16.0),
               child: Align(
