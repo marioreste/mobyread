@@ -11,6 +11,9 @@ class BooksStore {
   final ValueNotifier<List<Book>> toRead = ValueNotifier<List<Book>>([]);
   final ValueNotifier<List<Book>> readBooks = ValueNotifier<List<Book>>([]);
 
+  // recent events in memory (most recent first)
+  final ValueNotifier<List<String>> recentEvents = ValueNotifier<List<String>>([]);
+
   late final File _toReadFile;
   late final File _readFile;
   bool _initialized = false;
@@ -43,7 +46,6 @@ class BooksStore {
         readBooks.value = j.map((e) => Book.fromJson(e as Map<String, dynamic>)).toList();
       }
     } catch (e) {
-      // Ignora errori di parsing, mantieni liste vuote
       debugPrint('BooksStore load error: $e');
     }
   }
@@ -57,7 +59,7 @@ class BooksStore {
   }
 
   Future<void> _writeList(File file, List<Book> list) async {
-    if (_saving) return; // semplice protezione: evita salvataggi paralleli rapidi
+    if (_saving) return;
     _saving = true;
     try {
       final s = json.encode(list.map((b) => b.toJson()).toList());
@@ -69,15 +71,37 @@ class BooksStore {
     }
   }
 
-  void addToRead(Book b) => toRead.value = [...toRead.value, b];
-  void removeFromToRead(Book b) => toRead.value = toRead.value.where((x) => x.title != b.title).toList();
+  // helper per tenere traccia degli eventi recenti (mantiene max 100)
+  void _addEvent(String e) {
+    final current = recentEvents.value.toList();
+    current.insert(0, e);
+    if (current.length > 100) current.removeRange(100, current.length);
+    recentEvents.value = current;
+  }
 
-  void addRead(Book b) => readBooks.value = [...readBooks.value, b];
-  void removeFromRead(Book b) => readBooks.value = readBooks.value.where((x) => x.title != b.title).toList();
+  // API
+  void addToRead(Book b) {
+    toRead.value = [...toRead.value, b];
+    _addEvent('Aggiunto a "Da leggere": ${b.title}${_ratingSuffix(b)}');
+  }
+
+  void removeFromToRead(Book b) {
+    toRead.value = toRead.value.where((x) => x.title != b.title).toList();
+  }
+
+  void addRead(Book b) {
+    readBooks.value = [...readBooks.value, b];
+    _addEvent('Aggiunto ai "Letti": ${b.title}${_ratingSuffix(b)}');
+  }
+
+  void removeFromRead(Book b) {
+    readBooks.value = readBooks.value.where((x) => x.title != b.title).toList();
+  }
 
   void markAsRead(Book b) {
-    removeFromToRead(b);
-    addRead(b);
+    toRead.value = toRead.value.where((x) => x.title != b.title).toList();
+    readBooks.value = [...readBooks.value, b];
+    _addEvent('Segnato come letto: ${b.title}${_ratingSuffix(b)}');
   }
 
   void updateReview(Book book, {String? review, double? rating}) {
@@ -92,5 +116,14 @@ class BooksStore {
 
     _updateList(toRead);
     _updateList(readBooks);
+
+    final ratingText = rating == null ? '' : ' (voto: ${rating.toString()})';
+    final reviewText = (review == null || review.trim().isEmpty) ? '' : ' — recensione';
+    _addEvent('Recensione aggiornata: ${book.title}$ratingText$reviewText');
+  }
+
+  String _ratingSuffix(Book b) {
+    if (b.rating == null) return '';
+    return ' (voto: ${b.rating})';
   }
 }
