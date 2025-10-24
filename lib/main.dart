@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'models/books_store.dart';
 import 'screens/first_screen.dart';
 
-void main() => runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await BooksStore.instance.init(); // carica dati prima dell'avvio
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
