@@ -92,6 +92,111 @@ class _FinishedScreenState extends State<FinishedScreen> {
     });
   }
 
+  Future<void> _openReviewDialog(Book book) async{
+    final textCtrl = TextEditingController(text: book.review ?? '');
+    double? rating = book.rating;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
+          const double starSize = 40.0;
+
+          Widget starWidget(int index) {
+            // index 0..4 -> valori 0.5..5.0
+            final fullThreshold = index + 1.0;
+            final halfThreshold = index + 0.5;
+            IconData icon;
+            if (rating != null && rating! >= fullThreshold) {
+              icon = Icons.star;
+            } else if (rating != null && rating! >= halfThreshold) {
+              icon = Icons.star_half;
+            } else {
+              icon = Icons.star_border;
+            }
+
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (details) {
+                // calcola se click è sulla metà sinistra o destra della stella
+                final localDx = details.localPosition.dx;
+                final isLeft = localDx < starSize / 2;
+                final newRating = isLeft ? (index + 0.5) : (index + 1.0);
+
+                // la prima stella non può essere lasciata vuota:
+                final enforcedRating = newRating < 0.5 ? 0.5 : newRating;
+                setState(() => rating = enforcedRating);
+              },
+              child: SizedBox(
+                width: starSize,
+                height: starSize,
+                child: Center(
+                  child: Icon(icon, color: Colors.amber, size: starSize - 6),
+                ),
+              ),
+            );
+          }
+
+          return AlertDialog(
+            title: Text(book.title),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: textCtrl,
+                    minLines: 1,
+                    maxLines: 6,
+                    decoration: const InputDecoration(labelText: 'Recensione (opzionale)'),
+                  ),
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Voto'),
+                        const SizedBox(height: 6),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(5, (i) => starWidget(i)),
+                        ),
+                        const SizedBox(height: 6),
+                        if (rating == null)
+                          const Text('Seleziona un voto!', style: TextStyle(color: Colors.red, fontSize: 12)),
+                        Text(rating == null ? 'Nessun voto' : rating.toString()),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Annulla')),
+              ElevatedButton(
+                onPressed: rating == null
+                    ? null
+                    : () {
+                        final reviewText = textCtrl.text.trim();
+                        final reviewToSave = reviewText.isEmpty ? null : reviewText;
+                        BooksStore.instance.updateReview(book, review: reviewToSave, rating: rating);
+                        Navigator.of(context).pop();
+                      },
+                child: const Text('Salva'),
+              ),
+            ],
+          );
+        });
+      },
+    );
+
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+      try {
+        textCtrl.dispose();
+      } catch (_) {}
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,6 +235,7 @@ class _FinishedScreenState extends State<FinishedScreen> {
                                       final text = [book.author, book.genre].join(' - ');
                                       return Text(text, style: const TextStyle(color: Colors.white70));
                                     }()),
+                                    onTap: () => _openReviewDialog(book),
                                     trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [

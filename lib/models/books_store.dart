@@ -5,9 +5,23 @@ class BooksStore {
   BooksStore._private();
   static final BooksStore instance = BooksStore._private();
 
-  // liste osservabili
   final ValueNotifier<List<Book>> toRead = ValueNotifier<List<Book>>([]);
   final ValueNotifier<List<Book>> readBooks = ValueNotifier<List<Book>>([]);
+
+  /// aggiorna recensione e voto per un Book (sostituisce l'istanza nella lista)
+  void updateReview(Book book, {String? review, double? rating}) {
+    void _updateList(ValueNotifier<List<Book>> list) {
+      final idx = list.value.indexWhere((b) => b.title == book.title && b.author == book.author);
+      if (idx != -1) {
+        final updated = list.value.toList();
+        updated[idx] = updated[idx].copyWith(review: review, rating: rating);
+        list.value = updated;
+      }
+    }
+
+    _updateList(toRead);
+    _updateList(readBooks);
+  }
 
   void addToRead(Book b) {
     toRead.value = [...toRead.value, b];
