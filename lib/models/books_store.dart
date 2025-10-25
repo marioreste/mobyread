@@ -16,6 +16,7 @@ class BooksStore {
 
   late final File _toReadFile;
   late final File _readFile;
+  late final File _eventsFile;
   bool _initialized = false;
   bool _saving = false;
 
@@ -24,6 +25,7 @@ class BooksStore {
     final dir = await getApplicationDocumentsDirectory();
     _toReadFile = File('${dir.path}/mobyread_to_read.json');
     _readFile = File('${dir.path}/mobyread_read.json');
+    _eventsFile = File('${dir.path}/mobyread_events.json');
 
     await _loadFromDisk();
 
@@ -45,8 +47,14 @@ class BooksStore {
         final List<dynamic> j = json.decode(s);
         readBooks.value = j.map((e) => Book.fromJson(e as Map<String, dynamic>)).toList();
       }
-    } catch (e) {
-      debugPrint('BooksStore load error: $e');
+      if (await _eventsFile.exists()) {
+        final s = await _eventsFile.readAsString();
+        final List<dynamic> j = json.decode(s);
+        final loaded = j.whereType<String>().take(3).toList();
+        recentEvents.value = loaded;
+      }
+    } catch (_) {
+      // ignore load errors silently
     }
   }
 
@@ -58,25 +66,38 @@ class BooksStore {
     await _writeList(_readFile, readBooks.value);
   }
 
+  Future<void> _persistEvents() async {
+    try {
+      final s = json.encode(recentEvents.value.take(3).toList());
+      await _eventsFile.writeAsString(s);
+    } catch (_) {
+      // ignore save errors silently
+    }
+  }
+
   Future<void> _writeList(File file, List<Book> list) async {
-    if (_saving) return;
+    if (_saving) {
+      return;
+    }
     _saving = true;
     try {
       final s = json.encode(list.map((b) => b.toJson()).toList());
       await file.writeAsString(s);
-    } catch (e) {
-      debugPrint('BooksStore save error: $e');
+    } catch (_) {
+      // ignore save errors silently
     } finally {
       _saving = false;
     }
   }
 
-  // helper per tenere traccia degli eventi recenti (mantiene max 100)
   void _addEvent(String e) {
     final current = recentEvents.value.toList();
     current.insert(0, e);
-    if (current.length > 100) current.removeRange(100, current.length);
+    // mantieni solo le ultime 3
+    if (current.length > 3) current.removeRange(3, current.length);
     recentEvents.value = current;
+    // salva subito le ultime 3 su disco (non await per non bloccare l'UI)
+    _persistEvents();
   }
 
   // API
