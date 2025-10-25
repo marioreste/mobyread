@@ -93,7 +93,7 @@ class HomeScreen extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 30),
                       decoration: BoxDecoration(color: Colors.white.withOpacity(0.06), borderRadius: BorderRadius.circular(12)),
-                      child: const Center(child: Text('Nessuna attività recenti', style: TextStyle(color: Colors.white70))),
+                      child: const Center(child: Text('Nessuna attività recente', style: TextStyle(color: Colors.white70))),
                     );
                   }
                   return Column(

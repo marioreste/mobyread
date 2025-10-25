@@ -95,10 +95,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
       backgroundColor: deepBlue,
       appBar: AppBar(
         backgroundColor: deepBlueAppBar,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
         title: const Text('Libri da leggere'),
       ),
       body: SafeArea(

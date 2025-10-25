@@ -38,8 +38,10 @@ dependencies:
   # aggiungi questa riga
   path_provider: ^2.0.15
 
-  google_fonts: ^5.0.0
+  google_fonts: ^4.0.4
   mobile_scanner: ^7.1.3
+  http: ^0.13.6
+  connectivity_plus: ^7.0.0
 
 dev_dependencies:
   flutter_test:
