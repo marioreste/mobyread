@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/book.dart';
 import '../models/books_store.dart';
-import '../widgets/bottom_nav.dart';
 
 class FinishedScreen extends StatefulWidget {
   const FinishedScreen({super.key});
@@ -286,7 +285,6 @@ class _FinishedScreenState extends State<FinishedScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomNavBar(currentIndex: 2),
     );
   }
 }

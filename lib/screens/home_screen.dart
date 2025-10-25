@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'reading_screen.dart';
 import 'finished_screen.dart';
 import 'isbn_scanner_screen.dart';
-import '../widgets/bottom_nav.dart';
 import '../models/books_store.dart';
 import '../models/book.dart';
 import '../widgets/stat_card.dart';
@@ -146,7 +145,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const BottomNavBar(currentIndex: 1),
     );
   }
 }
