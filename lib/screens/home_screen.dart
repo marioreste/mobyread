@@ -31,8 +31,8 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 'Benvenuto in MobyRead!',
-                style: GoogleFonts.poppins(
-                  fontSize: 28,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 30,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
                   letterSpacing: 0.6,
