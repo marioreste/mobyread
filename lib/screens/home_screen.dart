@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'reading_screen.dart';
 import 'finished_screen.dart';
+import 'isbn_scanner_screen.dart';
 import '../widgets/bottom_nav.dart';
 import '../models/books_store.dart';
 import '../models/book.dart';
@@ -115,29 +116,22 @@ class HomeScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 20),
-              // Quick actions (keeps welcome buttons for compatibility)
+              // Quick action: Scanner ISBN (sostituisce i due bottoni)
               SizedBox(
                 width: buttonWidth,
                 child: OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ReadingScreen())),
-                  icon: const Icon(Icons.book, size: 26),
-                  label: const Text('Vai ai libri da leggere'),
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    side: const BorderSide(color: Colors.white),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              SizedBox(
-                width: buttonWidth,
-                child: OutlinedButton.icon(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FinishedScreen())),
-                  icon: const Icon(Icons.bookmark_added, size: 26),
-                  label: const Text('Vai ai libri letti'),
+                  onPressed: () async {
+                    final result = await Navigator.of(context).push<String>(
+                      MaterialPageRoute(builder: (_) => const IsbnScannerScreen()),
+                    );
+                    if (result != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Codice rilevato: $result')),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.camera_alt, size: 26),
+                  label: const Text('Scanner ISBN'),
                   style: OutlinedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
