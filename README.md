@@ -158,6 +158,9 @@ UX notes for testing
 - If testing in emulator, configure the AVD camera to use a host webcam or show a barcode image on another screen and point the emulator camera to it.
 - If you see `MissingPluginException` after adding packages, stop the app and run a full rebuild (`flutter clean` then `flutter run`).
 
+IMPORTANT: Note about Italian books and Open Library
+- Open Library is not an Italian national catalogue: many Italian books (especially niche or self-published ones) may be missing from its database. For reliable results during testing, prefer scanning widely-distributed books published by major publishers. Based on developer tests, books from Mondadori, Editrice Nord and Feltrinelli generally return metadata correctly. Publishers that frequently returned no results in tests include EdizioniCrescere, Garzanti and MomoEdizioni. If a scanned ISBN yields "Not found" and you are sure that your internet connection is working, try a different, more widely published book.
+
 ---
 
 ## Troubleshooting
