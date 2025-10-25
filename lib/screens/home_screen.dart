@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'reading_screen.dart';
 import 'finished_screen.dart';
 import '../widgets/bottom_nav.dart';
@@ -24,13 +25,18 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(
-                height: 120,
-                child: Image.asset('assets/whale.png', fit: BoxFit.contain),
+                height: 280,
+                child: Image.asset('assets/mobyread.png', fit: BoxFit.contain),
               ),
               const SizedBox(height: 12),
-              const Text(
+              Text(
                 'Benvenuto in MobyRead!',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white, decoration: TextDecoration.none),
+                style: GoogleFonts.poppins(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  letterSpacing: 0.6,
+                ),
               ),
               const SizedBox(height: 18),
 

@@ -38,6 +38,8 @@ dependencies:
   # aggiungi questa riga
   path_provider: ^2.0.15
 
+  google_fonts: ^5.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -62,6 +64,7 @@ flutter:
 
   assets:
     - assets/whale.png
+    - assets/mobyread.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
