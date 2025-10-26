@@ -92,7 +92,7 @@ class HomeScreen extends StatelessWidget {
                     return Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 30),
-                      decoration: BoxDecoration(color: Colors.white.withOpacity(0.06), borderRadius: BorderRadius.circular(12)),
+                      decoration: BoxDecoration(color: const Color.fromRGBO(0, 0, 0, 0.6), borderRadius: BorderRadius.circular(12)),
                       child: const Center(child: Text('Nessuna attività recente', style: TextStyle(color: Colors.white70))),
                     );
                   }
@@ -101,7 +101,7 @@ class HomeScreen extends StatelessWidget {
                       return Column(
                         children: [
                           ListTile(
-                            tileColor: Colors.white.withOpacity(0.04),
+                            tileColor: const Color.fromRGBO(255, 255, 255, 0.12),
                             title: Text(e, style: const TextStyle(color: Colors.white70)),
                             leading: const Icon(Icons.history, color: Colors.white70),
                             dense: true,
