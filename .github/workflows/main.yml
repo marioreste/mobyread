@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      JAVA_HOME: /usr/lib/jvm/adoptopenjdk-11-hotspot  # compatibile con setup-java step
+      JAVA_HOME: /usr/lib/jvm/adoptopenjdk-11-hotspot
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,19 +26,28 @@ jobs:
         with:
           flutter-version: '3.35.6'
 
+      # --- diagnostics: show environment and Flutter status ---
+      - name: Show Flutter version
+        run: flutter --version
+
+      - name: Flutter doctor (verbose)
+        run: flutter doctor -v || true
+
+      - name: Print env (for Android SDK vars)
+        run: env | grep -i ANDROID || true
+
       - name: Flutter pub get
         run: flutter pub get
 
       - name: Run analyzer
         run: flutter analyze
 
-      - name: Run tests
-        run: flutter test
-        # fallisce il job se qualche test non passa (default behavior)
+      - name: Run tests (verbose)
+        run: flutter test --no-shuffle --reporter=expanded
 
-      - name: Build debug APK
+      - name: Build debug APK (only if previous steps success)
         if: success()
-        run: flutter build apk --debug --no-shrink
+        run: flutter build apk --debug --no-shrink -v
 
       - name: Upload APK artifact
         if: success()
