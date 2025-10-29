@@ -77,32 +77,6 @@ Important: if you add native plugins, do a full rebuild (stop the running app an
 
 ---
 
-## What to include for the exam submission
-
-For a "source buildable on Android" provide the project root with:
-- `lib/`, `android/`, `pubspec.yaml`, `assets/`
-- `pubspec.lock` (optional)
-- README with build instructions (this file)
-
-Do NOT include:
-- `build/`, `.dart_tool/`, `.gradle/`, local keystores or any private credentials.
-
-You may also provide:
-- The compiled APK (`build/app/outputs/flutter-apk/app-release.apk` or `app-debug.apk`)
-- A short script or note about required Flutter version.
-
-To create a zip of the deliverable:
-
-Windows PowerShell example:
-
-```powershell
-# from project root
-Remove-Item -Recurse -Force build, .dart_tool -ErrorAction SilentlyContinue
-Compress-Archive -Path . -DestinationPath ..\mobyread_submission.zip
-```
-
----
-
 ## Permissions
 
 The scanner requires camera permission:
@@ -122,7 +96,7 @@ At runtime the app will request camera permission on first use.
 
 ---
 
-## How the app works (for the examiner)
+## How the app works
 
 Purpose
 - Manage a small personal catalog of books: "Da leggere" (To read) and "Letti" (Read).
