@@ -102,7 +102,6 @@ class _FinishedScreenState extends State<FinishedScreen> {
           const double starSize = 40.0;
 
           Widget starWidget(int index) {
-            // index 0..4 -> valori 0.5..5.0
             final fullThreshold = index + 1.0;
             final halfThreshold = index + 0.5;
             IconData icon;
@@ -117,12 +116,10 @@ class _FinishedScreenState extends State<FinishedScreen> {
             return GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTapDown: (details) {
-                // calcola se click è sulla metà sinistra o destra della stella
                 final localDx = details.localPosition.dx;
                 final isLeft = localDx < starSize / 2;
                 final newRating = isLeft ? (index + 0.5) : (index + 1.0);
 
-                // la prima stella non può essere lasciata vuota:
                 final enforcedRating = newRating < 0.5 ? 0.5 : newRating;
                 setState(() => rating = enforcedRating);
               },

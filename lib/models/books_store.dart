@@ -11,7 +11,6 @@ class BooksStore {
   final ValueNotifier<List<Book>> toRead = ValueNotifier<List<Book>>([]);
   final ValueNotifier<List<Book>> readBooks = ValueNotifier<List<Book>>([]);
 
-  // recent events in memory (most recent first)
   final ValueNotifier<List<String>> recentEvents = ValueNotifier<List<String>>([]);
 
   late final File _toReadFile;
@@ -29,7 +28,6 @@ class BooksStore {
 
     await _loadFromDisk();
 
-    // salva automaticamente quando cambiano le liste
     toRead.addListener(_persistToRead);
     readBooks.addListener(_persistRead);
     _initialized = true;
@@ -54,7 +52,6 @@ class BooksStore {
         recentEvents.value = loaded;
       }
     } catch (_) {
-      // ignore load errors silently
     }
   }
 
@@ -71,7 +68,6 @@ class BooksStore {
       final s = json.encode(recentEvents.value.take(3).toList());
       await _eventsFile.writeAsString(s);
     } catch (_) {
-      // ignore save errors silently
     }
   }
 
@@ -84,7 +80,6 @@ class BooksStore {
       final s = json.encode(list.map((b) => b.toJson()).toList());
       await file.writeAsString(s);
     } catch (_) {
-      // ignore save errors silently
     } finally {
       _saving = false;
     }
@@ -93,14 +88,11 @@ class BooksStore {
   void _addEvent(String e) {
     final current = recentEvents.value.toList();
     current.insert(0, e);
-    // mantieni solo le ultime 3
     if (current.length > 3) current.removeRange(3, current.length);
     recentEvents.value = current;
-    // salva subito le ultime 3 su disco (non await per non bloccare l'UI)
     _persistEvents();
   }
 
-  // API
   void addToRead(Book b) {
     toRead.value = [...toRead.value, b];
     _addEvent('Aggiunto a "Da leggere": ${b.title}${_ratingSuffix(b)}');
