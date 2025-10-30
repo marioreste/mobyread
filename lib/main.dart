@@ -4,12 +4,13 @@ import 'screens/first_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await BooksStore.instance.init(); // carica dati prima dell'avvio
+  await BooksStore.instance.init(); 
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF021025)),
         brightness: Brightness.dark,
       ),
+      
       home: const FirstScreen(),
     );
   }
